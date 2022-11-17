@@ -51,7 +51,9 @@ teabags <- read_csv(file = "221115_teabag_windspeed_data.csv",
                            forestfruit = "F",
                            earlgrey = "E")) |> 
   # Convert distance to a more standard unit (1kf = 0.3m)
-  mutate(distance_m = distance_kf * 0.3)
+  mutate(distance_m = distance_kf * 0.3) |> 
+  # convert m distance to cm
+  mutate(distance_m = distance_m * 100)
 
 ```
 
