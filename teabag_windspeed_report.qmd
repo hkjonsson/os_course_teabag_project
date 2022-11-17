@@ -28,6 +28,7 @@ if(!require(pacman)) install.packages("pacman")
 # load/install packages
 pacman::p_load(tidyverse,
                tidylog,
+               ggbeeswarm,
                lubridate,
                skimr)
 ```
@@ -38,13 +39,22 @@ Let's get the data in here and fix the formats some variables:
 
 ```{r}
 #| label: data-import-wrangling
-teabags <- read_csv(file = "221115_teabag_windspeed_data.csv") |> 
+teabags <- read_csv(file = "221115_teabag_windspeed_data.csv",
+                    show_col_types = FALSE) |> 
   
   # format date column from dd/mm/yyyy to standard format yyyy-mm-dd
   mutate(date = lubridate::dmy(date)) |> 
   # convert location_no, replicate, topo, type to factors
   mutate(across(c(location_no, replicate, topo, type),
-                as.factor))
+                as.factor)) |> 
+  # change tea type factor levels
+  mutate(type = fct_recode(type,
+                           "Forest Fruit" = "F",
+                           "Earl Grey" = "E")) |> 
+  # Convert distance to a more standard unit (1kf = 0.3m)
+  mutate(distance_m = distance_kf * 0.3) |> 
+  # convert m distance to cm
+  mutate(distance_cm = distance_m * 100)
 
 ```
 
@@ -52,15 +62,39 @@ teabags <- read_csv(file = "221115_teabag_windspeed_data.csv") |>
 #| label: check-data
 
 glimpse(teabags)
-WWWW
-
 ```
+
+## Results
 
 ```{r}
-#| label: check teabag-falling-distance variable distribution 
+# create an ugly histogram
 
-hist(teabags$distance_kf)
-hist(log(teabags$distance_kf))
+hist(teabags$distance_m, breaks = 28)
 
 ```
 
+Compare distances between tea types:
+
+```{r}
+#| label: violin-plot
+#| include: false
+
+(type_comparison <- ggplot(teabags,
+                           aes(x = type,
+                               y = distance_m,
+                               fill = type)) +
+    geom_quasirandom(colour = "darkgrey",
+                     size = 3,
+                     alpha = 0.5,
+                     width = 0.35) +
+    geom_violin(alpha = 0.6,
+                colour = "grey70",
+                linewidth = 1.2) +
+    scale_fill_manual(values = c("goldenrod", "indianred4")) +
+    labs(x = "tea type",
+         y = "distance [m]",
+         fill = "tea type") +
+    theme_classic() +
+    theme(axis.title = element_text(face = "bold"),
+          legend.title = element_text(face = "bold")))
+```
