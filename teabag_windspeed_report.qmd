@@ -62,3 +62,12 @@ teabags <- read_csv(file = "221115_teabag_windspeed_data.csv",
 
 glimpse(teabags)
 ```
+
+## Results
+
+```{r}
+# create an ugly histogram
+
+hist(teabags$distance_m)
+
+```
