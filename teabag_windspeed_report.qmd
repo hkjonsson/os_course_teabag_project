@@ -57,3 +57,12 @@ teabags$distance_m <- teabags$distance_kf * 0.3
 glimpse(teabags)
 
 ```
+
+## Results
+
+```{r}
+# create an ugly histogram
+
+hist(teabags$distance_m)
+
+```
