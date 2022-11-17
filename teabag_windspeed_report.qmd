@@ -52,6 +52,7 @@ teabags <- read_csv(file = "221115_teabag_windspeed_data.csv") |>
 #| label: check-data
 
 glimpse(teabags)
+WWWW
 
 ```
 
