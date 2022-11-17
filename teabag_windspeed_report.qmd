@@ -38,16 +38,20 @@ Let's get the data in here and fix the formats some variables:
 
 ```{r}
 #| label: data-import-wrangling
-teabags <- read_csv(file = "221115_teabag_windspeed_data.csv") |> 
+teabags <- read_csv(file = "221115_teabag_windspeed_data.csv",
+                    show_col_types = FALSE) |> 
   
   # format date column from dd/mm/yyyy to standard format yyyy-mm-dd
   mutate(date = lubridate::dmy(date)) |> 
   # convert location_no, replicate, topo, type to factors
   mutate(across(c(location_no, replicate, topo, type),
-                as.factor))
-
-# Convert distance to a more standard unit (1kf = 0.3m)
-teabags$distance_m <- teabags$distance_kf * 0.3
+                as.factor)) |> 
+  # change tea type factor levels
+  mutate(type = fct_recode(type,
+                           forestfruit = "F",
+                           earlgrey = "E")) |> 
+  # Convert distance to a more standard unit (1kf = 0.3m)
+  mutate(distance_m = distance_kf * 0.3)
 
 ```
 
@@ -55,5 +59,4 @@ teabags$distance_m <- teabags$distance_kf * 0.3
 #| label: check-data
 
 glimpse(teabags)
-
 ```
