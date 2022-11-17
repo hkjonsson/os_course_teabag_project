@@ -54,3 +54,12 @@ teabags <- read_csv(file = "221115_teabag_windspeed_data.csv") |>
 glimpse(teabags)
 
 ```
+
+```{r}
+#| label: check teabag-falling-distance variable distribution 
+
+hist(teabags$distance_kf)
+hist(log(teabags$distance_kf))
+
+```
+
